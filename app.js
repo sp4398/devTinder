@@ -4,13 +4,13 @@ const app = express();
 
 //Middleware
 //handle auth middleware for all routes
-app.use((req, res, next) => {
+app.use("/admin",(req, res, next) => {
   const token = "xyzfdf";
   const isAdminAuthrized = token === "xyz";
-  if (isAdminAuthrized) {
-    next();
-  } else {
+  if (!isAdminAuthrized) {
     res.status(401).send("Unauthorized");
+  } else {
+    next();
   }
 });
 
