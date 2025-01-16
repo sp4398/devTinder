@@ -20,6 +20,13 @@ app.get("/admin/delete", (req, res) => {
   res.send("All data Deleted");
 });
 
+// middleware for error handling
+// app.use("/",(err,req,res,next)=>{
+//   if(err){
+//     res.status(500).send("Something went wrong")
+//   }
+// })
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
