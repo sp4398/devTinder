@@ -1,18 +1,11 @@
 const express = require("express");
 
 const app = express();
+const { adminAuth } = require("./middlewares/auth");
 
 //Middleware
 //handle auth middleware for all routes
-app.use("/admin",(req, res, next) => {
-  const token = "xyzfdf";
-  const isAdminAuthrized = token === "xyz";
-  if (!isAdminAuthrized) {
-    res.status(401).send("Unauthorized");
-  } else {
-    next();
-  }
-});
+app.use("/admin", adminAuth);
 
 //handle auth middleware for get routes
 app.get("/admin/getAll", (req, res) => {
