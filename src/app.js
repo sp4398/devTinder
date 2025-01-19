@@ -1,7 +1,20 @@
 const express = require("express");
+const connectDB=require("./config/database");
 
 const app = express();
 const { adminAuth, userAuth } = require("./middlewares/auth");
+
+
+connectDB().then(()=>{
+  console.log("Database Connected!!!");
+  app.listen(3000, () => {
+    console.log("Server is running on port 3000");
+  });
+})
+.catch((err)=>{
+  console.log("Something Error...");
+  
+})
 
 //Middleware
 //handle auth middleware for all routes
@@ -27,6 +40,4 @@ app.get("/admin/delete", (req, res) => {
 //   }
 // })
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+
