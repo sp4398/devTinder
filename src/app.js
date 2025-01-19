@@ -13,13 +13,12 @@ app.post("/signup", async (req, res) => {
     password: "Saurav@123",
   });
 
-  try{
+  try {
     await user.save();
-  res.send("User Added Successfully!");
-  }catch(err){
-    res.status(400).send("Error while Adding user"+err.message)
+    res.send("User Added Successfully!");
+  } catch (err) {
+    res.status(400).send("Error while Adding user" + err.message);
   }
-  
 });
 
 connectDB()
@@ -32,6 +31,21 @@ connectDB()
   .catch((err) => {
     console.log("Something Error...");
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
 //Middleware
 //handle auth middleware for all routes
