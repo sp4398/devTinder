@@ -34,38 +34,40 @@ app.get("/user", async (req, res) => {
   }
 });
 
-//getting al user information from database
-app.get("/feed",async(req,res)=>{
+//getting all user information from database
+app.get("/feed", async (req, res) => {
   try {
-    const users= await User.find({})
-    res.send(users)
+    const users = await User.find({});
+    res.send(users);
   } catch (error) {
     res.status(400).send("Something went wrong");
   }
-})
+});
 
 //deleting data from database
-app.delete("/user", async (req,res)=>{
-  const userId = req.body.userId
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
   try {
-    const user = await User.findByIdAndDelete(userId)
-    res.send("User Deleted")
+    const user = await User.findByIdAndDelete(userId);
+    res.send("User Deleted");
   } catch (error) {
     res.status(400).send("Something went wrong");
   }
-})
+});
 
 //updating data in database
-app.patch("/user", async (req,res)=>{
-  const userId=req.body.userId
-  const data= req.body  
+app.patch("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const data = req.body;
   try {
-    const user=await User.findByIdAndUpdate({_id:userId}, data)
-    res.send("User Updated")
-  } catch (error) {
-    res.status(400).send("Something went wrong");
+    const user = await User.findByIdAndUpdate({ _id: userId }, data, {
+      runValidators: true,
+    });
+    res.send("User Updated");
+  } catch (err) {
+    res.status(400).send("Update Failed:" + err.message);
   }
-})
+});
 
 connectDB()
   .then(() => {
