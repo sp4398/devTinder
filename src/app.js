@@ -4,15 +4,12 @@ const User = require("./models/user");
 
 const app = express();
 
+// convert json object to JS object
+app.use(express.json());
+
 app.post("/signup", async (req, res) => {
   //Creating a new instance of the user model
-  const user = new User({
-    firstName: "Saurav",
-    lastName: "Pandey",
-    emailId: "saurav@pandey.com",
-    password: "Saurav@123",
-  });
-
+  const user = new User(req.body);
   try {
     await user.save();
     res.send("User Added Successfully!");
@@ -45,7 +42,7 @@ connectDB()
 
 
 
-  
+
 
 //Middleware
 //handle auth middleware for all routes
