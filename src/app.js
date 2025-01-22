@@ -3,11 +3,14 @@ const connectDB = require("./config/database");
 const User = require("./models/user");
 const { validateSignupData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
 // convert json object to JS object
 app.use(express.json());
+app.use(cookieParser());
 
 //Adding data to database
 app.post("/signup", async (req, res) => {
@@ -45,10 +48,38 @@ app.post("/login", async (req, res) => {
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (isPasswordValid) {
+      // create jwt token
+      const token = await jwt.sign({ _id: user._id }, "DevTinder@1234");
+
+      // add token to cookie
+      res.cookie("token", token);
+
       res.send("Login Successful!!!");
     } else {
       throw new Error("User Does not exist");
     }
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
+  }
+});
+
+app.get("/profile", async (req, res) => {
+  try {
+    const cookies = req.cookies;
+    const { token } = cookies;
+    if (!token) {
+      throw new Error("Token not found");
+    }
+
+    //validate token
+    const decoded = await jwt.verify(token, "DevTinder@1234");
+
+    const { _id } = decoded;
+    const user = await User.findById(_id);
+    if (!user) {
+      throw new Error("User does not exist");
+    }
+    res.send(user);
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
   }
