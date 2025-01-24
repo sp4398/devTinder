@@ -15,7 +15,6 @@ app.use("/", authRouter);
 app.use("/", requestRouter);
 app.use("/", profileRouter);
 
-
 connectDB()
   .then(() => {
     console.log("Database Connected!!!");
