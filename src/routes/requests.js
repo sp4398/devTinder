@@ -68,7 +68,8 @@ requestRouter.post(
     try {
       const loggedInUser = req.user;
       const { status, requestId } = req.params;
-
+      
+      //Checking valid status
       const allowedStatus = ["accepted", "rejected"];
       if (!allowedStatus.includes(status)) {
         return res.status(400).json({ message: "Invalid status" });
