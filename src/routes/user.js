@@ -1,7 +1,10 @@
 const express = require("express");
 const { userAuth } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
+const User = require("../models/user");
 const userRouter = express.Router();
+
+const USER_SAFE_DATA = "firstName lastName gender age about skills";
 
 userRouter.get("/user/request/received", userAuth, async (req, res) => {
   try {
@@ -10,8 +13,7 @@ userRouter.get("/user/request/received", userAuth, async (req, res) => {
     const connectionRequest = await ConnectionRequest.find({
       toUserId: loggedInUser._id,
       status: "interested",
-    }).populate("fromUserId", "firstName lastName gender age about skills");
-    // }).populate("fromUserId", ["firstName", "lastName"]);
+    }).populate("fromUserId", USER_SAFE_DATA);
 
     res.json({ message: "Data fetched successfully", data: connectionRequest });
   } catch (err) {
@@ -29,8 +31,8 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         { fromUserId: loggedInUser._id, status: "accepted" },
       ],
     })
-      .populate("fromUserId", "firstName lastName gender age about skills")
-      .populate("toUserId", "firstName lastName gender age about skills");
+      .populate("fromUserId", USER_SAFE_DATA)
+      .populate("toUserId", USER_SAFE_DATA);
 
     const data = connectionRequest.map((row) => {
       if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
@@ -41,6 +43,37 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
     res.json({ data });
   } catch (err) {
     res.status(400).send("ERROR: " + err.message);
+  }
+});
+
+userRouter.get("/feed", userAuth, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+
+    const connectionRequest = await ConnectionRequest.find({
+      $or:[
+        {fromUserId:loggedInUser._id},
+        {toUserId:loggedInUser._id},
+      ],
+    }).select("fromUserId toUserId");
+
+    const hideUsers = new Set();
+    connectionRequest.forEach((req)=>{
+      hideUsers.add(req.fromUserId.toString());
+      hideUsers.add(req.toUserId.toString());
+    });
+
+    const users = await User.find({
+      $and:[
+        {_id:{$nin:Array.from(hideUsers)}},
+        {_id:{$ne:loggedInUser._id}},
+      ],
+    }).select(USER_SAFE_DATA);
+
+    res.send(users)
+
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
