@@ -3,7 +3,7 @@ const userRouter = express.Router();
 
 const { userAuth } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
-const User = require("../models/user");
+const User = require("../models/User");
 
 const USER_SAFE_DATA = "firstName lastName photoUrl age gender about skills";
 
