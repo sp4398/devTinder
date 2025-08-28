@@ -18,7 +18,7 @@ authRouter.post("/signup", async (req, res) => {
     console.log(passwordHash);
 
     //   Creating a new instance of the User model
-    const user = new user({
+    const user = new User({
       firstName,
       lastName,
       emailId,
