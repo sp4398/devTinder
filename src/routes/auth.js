@@ -2,7 +2,8 @@ const express = require("express");
 const authRouter = express.Router();
 
 const { validateSignupData } = require("../utils/validation");
-const user = require("../models/user");
+const User = require("../models/user");
+
 const bcrypt = require("bcrypt");
 
 authRouter.post("/signup", async (req, res) => {
@@ -17,7 +18,7 @@ authRouter.post("/signup", async (req, res) => {
     console.log(passwordHash);
 
     //   Creating a new instance of the User model
-    const user = new User({
+    const user = new user({
       firstName,
       lastName,
       emailId,
