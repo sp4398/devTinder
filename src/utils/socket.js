@@ -13,7 +13,6 @@ const initializeSocket = (server) => {
 
     socket.on("joinChat", ({ userId, targetedUserId }) => {
       const roomId = [userId, targetedUserId].sort().join("_");
-      console.log(roomId);
       socket.join(roomId);
     });
 
@@ -22,7 +21,6 @@ const initializeSocket = (server) => {
       async ({ firstName, userId, targetedUserId, text }) => {
         try {
           const roomId = [userId, targetedUserId].sort().join("_");
-          console.log(firstName + ": " + text + " to roomId: " + roomId);
 
           let chat = await Chat.findOne({
             participants: { $all: [userId, targetedUserId] },
